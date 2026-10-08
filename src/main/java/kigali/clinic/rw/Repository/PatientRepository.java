@@ -16,6 +16,9 @@ public interface PatientRepository extends JpaRepository<Patient, UUID> {
     List<Patient> findByAppointments_DateAfter(java.time.LocalDateTime date);
     long countByNamesContainingIgnoreCase(String nameFragment);
 
+    // Quiz A1
+    List<Patient> findByNamesContainingIgnoreCaseOrderByNamesAsc(String lastName);
+
     @org.springframework.data.jpa.repository.Query("SELECT p FROM Patient p WHERE p.appointments IS EMPTY")
     List<Patient> findPatientsWithNoAppointments();
     

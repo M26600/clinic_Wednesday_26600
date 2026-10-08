@@ -29,4 +29,8 @@ public class PatientService {
     public void deletePatient(UUID id) {
         patientRepository.deleteById(id);
     }
+
+    public List<Patient> getPatientsByLastName(String lastName) {
+        return patientRepository.findByNamesContainingIgnoreCaseOrderByNamesAsc(lastName);
+    }
 }
