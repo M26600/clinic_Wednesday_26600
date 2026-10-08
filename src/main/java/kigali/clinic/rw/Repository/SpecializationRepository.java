@@ -18,4 +18,10 @@ public interface SpecializationRepository extends JpaRepository<Specialization, 
 
     @org.springframework.data.jpa.repository.Query("SELECT s FROM Specialization s JOIN s.doctors d WHERE d.id = :doctorId")
     List<Specialization> findByDoctorId(@org.springframework.data.repository.query.Param("doctorId") UUID doctorId);
+
+    // @org.springframework.data.jpa.repository.Query(value = "SELECT * FROM specialization WHERE doctors IS NULL", nativeQuery = true)
+    // List<Specialization> findUnusedSpec();
+
+    @org.springframework.data.jpa.repository.Query("SELECT s FROM Specialization s WHERE s.doctors IS EMPTY")
+    List<Specialization> findUnusedSpecializations();
 }

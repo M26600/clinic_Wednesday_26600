@@ -44,4 +44,11 @@ public class SpecializationController {
     public void deleteSpecialization(@PathVariable UUID id) {
         specializationService.deleteSpecialization(id);
     }
+
+    @GetMapping("/unused")
+    public List<Specialization> getUnusedSpecializations() {
+        List<Specialization> unused = specializationService.getUnusedSpecializations();
+        // System.out.println(unused.size());
+        return unused;
+    }
 }

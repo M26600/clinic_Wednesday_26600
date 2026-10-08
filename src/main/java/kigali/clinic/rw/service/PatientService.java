@@ -33,4 +33,8 @@ public class PatientService {
     public List<Patient> getPatientsByLastName(String lastName) {
         return patientRepository.findByNamesContainingIgnoreCaseOrderByNamesAsc(lastName);
     }
+
+    public List<Patient> getPatientsOfDoctor(UUID doctorId) {
+        return patientRepository.findPatientsByDoctorId(doctorId);
+    }
 }

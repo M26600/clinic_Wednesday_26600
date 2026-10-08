@@ -15,6 +15,9 @@ public class PatientController {
     @Autowired
     private PatientService patientService;
 
+    @Autowired
+    private kigali.clinic.rw.service.DoctorService doctorService;
+
     @GetMapping
     public List<Patient> getAllPatients() {
         return patientService.getAllPatients();
@@ -49,5 +52,17 @@ public class PatientController {
     @GetMapping("/by-last-name")
     public List<Patient> getPatientsByLastName(@RequestParam String lastName) {
         return patientService.getPatientsByLastName(lastName);
+    }
+
+    @GetMapping("/of-doctor/{doctorId}")
+    public org.springframework.http.ResponseEntity<?> getPatientsOfDoctor(@PathVariable(value="doctorId") UUID doctorId) {
+        Object doc = doctorService.getDoctorById(doctorId);
+        if (doc == null) {
+            String msg = "The doctor with that id does not exist";
+            return org.springframework.http.ResponseEntity.status(404).body(msg);
+        }
+        
+        List<Patient> pts = patientService.getPatientsOfDoctor(doctorId);
+        return org.springframework.http.ResponseEntity.ok(pts);
     }
 }
