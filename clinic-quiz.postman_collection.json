@@ -1,0 +1,126 @@
+{
+  "info": {
+    "name": "Clinic Qui",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "search exact",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/doctors/search/exact?firstName=Jackeline&lastName=Mushimimana",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "doctors", "search", "exact"],
+          "query": [
+            { "key": "firstName", "value": "Jackeline" },
+            { "key": "lastName", "value": "Mushimimana" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "pattern search",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/offices/search/pattern?query=main",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "offices", "search", "pattern"],
+          "query": [
+            { "key": "query", "value": "main" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "A3: Search appointments by reason keyword",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/search/reason?keyword=headache",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "appointments", "search", "reason"],
+          "query": [
+            { "key": "keyword", "value": "headache" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "before date appt",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/search/before-date?status=SCHEDULED&date=2026-12-31T23:59:59",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "appointments", "search", "before-date"],
+          "query": [
+            { "key": "status", "value": "SCHEDULED" },
+            { "key": "date", "value": "2026-12-31T23:59:59" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "B1: Doctors by specialization",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/doctors/specialization/cardiologist",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "doctors", "specialization", "cardiologist"]
+        }
+      }
+    },
+    {
+      "name": "no office drs",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/doctors/no-office",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "doctors", "no-office"]
+        }
+      }
+    },
+    {
+      "name": "B3: Specializations unused",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/specializations/unused",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "specializations", "unused"]
+        }
+      }
+    },
+    {
+      "name": "B4: Patients of a doctor",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/patients/doctor/00000000-0000-0000-0000-000000000001",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "patients", "doctor", "00000000-0000-0000-0000-000000000001"]
+        }
+      }
+    }
+  ]
+}
