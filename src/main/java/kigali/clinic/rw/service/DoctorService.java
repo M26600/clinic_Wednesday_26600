@@ -36,4 +36,10 @@ public class DoctorService {
     public void deleteDoctor(UUID id) {
         doctorRepository.deleteById(id);
     }
+
+    public List<Doctor> getDoctorsBySpecialization(String name) {
+        // System.out.println("fetching doctors for spec " + name);
+        List<Doctor> res = doctorRepository.findBySpecializationNameIgnoreCaseJoin(name);
+        return res;
+    }
 }

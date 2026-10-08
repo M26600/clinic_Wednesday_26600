@@ -25,4 +25,10 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
 
     @Query("SELECT d FROM Doctor d JOIN d.specializations s WHERE s.name = :specName")
     List<Doctor> findBySpecializationName(@Param("specName") String specName);
+
+    // @Query("SELECT d FROM Doctor d JOIN d.specializations s WHERE s.name = :name")
+    // List<Doctor> getDocsBySpec(String name);
+    
+    @Query(value = "SELECT d FROM Doctor d JOIN d.specializations s WHERE LOWER(s.name) = LOWER(:name)")
+    List<Doctor> findBySpecializationNameIgnoreCaseJoin(@Param("name") String name);
 }

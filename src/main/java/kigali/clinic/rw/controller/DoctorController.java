@@ -65,4 +65,10 @@ public class DoctorController {
         }
         return null;
     }
+
+    @GetMapping("/by-specialization")
+    public List<Doctor> getDoctorsBySpecialization(@RequestParam(value="name") String name) {
+        // String lower = name.toLowerCase(); // not needed anymore handled in query
+        return doctorService.getDoctorsBySpecialization(name);
+    }
 }
