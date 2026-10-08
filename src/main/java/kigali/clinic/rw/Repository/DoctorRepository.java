@@ -31,4 +31,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     
     @Query(value = "SELECT d FROM Doctor d JOIN d.specializations s WHERE LOWER(s.name) = LOWER(:name)")
     List<Doctor> findBySpecializationNameIgnoreCaseJoin(@Param("name") String name);
+
+    @Query("SELECT d FROM Doctor d WHERE d.office IS NULL ORDER BY d.lastName ASC")
+    List<Doctor> findDoctorsWithoutOffice();
 }

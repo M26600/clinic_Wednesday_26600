@@ -42,4 +42,8 @@ public class DoctorService {
         List<Doctor> res = doctorRepository.findBySpecializationNameIgnoreCaseJoin(name);
         return res;
     }
+
+    public List<Doctor> getDoctorsWithoutOffice() {
+        return doctorRepository.findDoctorsWithoutOffice();
+    }
 }

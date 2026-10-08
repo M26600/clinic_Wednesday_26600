@@ -71,4 +71,9 @@ public class DoctorController {
         // String lower = name.toLowerCase(); // not needed anymore handled in query
         return doctorService.getDoctorsBySpecialization(name);
     }
+
+    @GetMapping("/without-office")
+    public List<Doctor> getDoctorsWithoutOffice() {
+        return doctorService.getDoctorsWithoutOffice();
+    }
 }
