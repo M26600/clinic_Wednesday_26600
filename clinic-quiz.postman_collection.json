@@ -121,6 +121,19 @@
           "path": ["api", "patients", "doctor", "00000000-0000-0000-0000-000000000001"]
         }
       }
+    },
+    {
+      "name": "c1 status stats",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/stats/by-status",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "appointments", "stats", "by-status"]
+        }
+      }
     }
   ]
 }

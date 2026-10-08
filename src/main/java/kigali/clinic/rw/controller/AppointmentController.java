@@ -92,4 +92,9 @@ public class AppointmentController {
         PageRequest pageable = PageRequest.of(0, 10, Sort.by("date").ascending());
         return appointmentService.getDoctorAppointmentsPaged(doctorId, pageable);
     }
+
+    @GetMapping("/stats/by-status")
+    public List<Object[]> getAppointmentsByStatusStats() {
+        return appointmentService.getAppointmentStatsByStatus();
+    }
 }

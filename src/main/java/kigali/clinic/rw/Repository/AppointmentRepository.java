@@ -39,4 +39,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     List<Appointment> findAppointmentsByDoctorSpecialization(@Param("specName") String specName);
 
     Page<Appointment> findByDoctorId(UUID doctorId, Pageable pageable);
+
+    @Query("SELECT a.status, COUNT(a) FROM Appointment a GROUP BY a.status")
+    List<Object[]> countAppointmentsByStatus();
 }

@@ -70,4 +70,8 @@ public class AppointmentService {
     public org.springframework.data.domain.Page<Appointment> getDoctorAppointmentsPaged(UUID doctorId, org.springframework.data.domain.Pageable pageable) {
         return appointmentRepository.findByDoctorId(doctorId, pageable);
     }
+
+    public List<Object[]> getAppointmentStatsByStatus() {
+        return appointmentRepository.countAppointmentsByStatus();
+    }
 }
