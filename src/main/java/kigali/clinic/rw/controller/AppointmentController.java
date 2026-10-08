@@ -50,6 +50,18 @@ public class AppointmentController {
         appointmentService.deleteAppointment(id);
     }
 
+    @GetMapping("/by-status")
+    public List<Appointment> getAppointmentsByStatus(@RequestParam kigali.clinic.rw.domain.AppointmentStatus status) {
+        return appointmentService.getAppointmentsByStatus(status);
+    }
+
+    @GetMapping("/between")
+    public List<Appointment> getAppointmentsBetween(
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate start,
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate end) {
+        return appointmentService.getAppointmentsBetween(start, end);
+    }
+
     @GetMapping("/pending/{doctorId}")
     public List<Appointment> getPendingAppointments(@PathVariable UUID doctorId) {
         return appointmentService.getPendingAppointments(doctorId);

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import kigali.clinic.rw.domain.AppointmentStatus;
+
 @Service
 public class AppointmentService {
 
@@ -30,12 +32,22 @@ public class AppointmentService {
         appointmentRepository.deleteById(id);
     }
 
+    public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
+        return appointmentRepository.findByStatusOrderByDateAsc(status);
+    }
+
+    public List<Appointment> getAppointmentsBetween(java.time.LocalDate start, java.time.LocalDate end) {
+        java.time.LocalDateTime startDateTime = start.atStartOfDay();
+        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999999999);
+        return appointmentRepository.findByDateBetweenOrderByDateAsc(startDateTime, endDateTime);
+    }
+
     public List<Object[]> findPastPendingAppointments() {
         return appointmentRepository.findPastPendingAppointments();
     }
 
     public List<Appointment> getPendingAppointments(UUID doctorId) {
-        return appointmentRepository.findByDoctorIdAndStatusOrderByDateAsc(doctorId, "PENDING");
+        return appointmentRepository.findByDoctorIdAndStatusOrderByDateAsc(doctorId, AppointmentStatus.PENDING);
     }
 
     public List<Object[]> getDoctorLoads() {

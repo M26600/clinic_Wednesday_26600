@@ -11,17 +11,22 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
 
+import kigali.clinic.rw.domain.AppointmentStatus;
+
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, UUID> {
 
-    List<Appointment> findByDoctorIdAndStatusOrderByDateAsc(UUID doctorId, String status);
-    List<Appointment> findByStatus(String status);
+    List<Appointment> findByDoctorIdAndStatusOrderByDateAsc(UUID doctorId, AppointmentStatus status);
+    List<Appointment> findByStatus(AppointmentStatus status);
     List<Appointment> findByDateAfter(java.time.LocalDateTime date);
     
     List<Appointment> findByReasonContainingIgnoreCase(String keyword);
-    List<Appointment> findByStatusAndDateBefore(String status, java.time.LocalDateTime date);
-    long countByStatus(String status);
+    List<Appointment> findByStatusAndDateBefore(AppointmentStatus status, java.time.LocalDateTime date);
+    long countByStatus(AppointmentStatus status);
     List<Appointment> findTop5ByDoctorIdOrderByDateDesc(UUID doctorId);
+
+    List<Appointment> findByStatusOrderByDateAsc(AppointmentStatus status);
+    List<Appointment> findByDateBetweenOrderByDateAsc(java.time.LocalDateTime start, java.time.LocalDateTime end);
 
     @Query("SELECT a.patient.names, a.doctor.lastName, a.date FROM Appointment a WHERE a.status = 'PENDING' AND a.date < CURRENT_TIMESTAMP")
     List<Object[]> findPastPendingAppointments();

@@ -18,7 +18,9 @@ public class Appointment {
     private LocalDateTime date;
     
     private String reason;
-    private String status;
+    
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus status;
     
     // Ignore the 'appointments' list in Patient to prevent infinite recursion during JSON serialization
     @ManyToOne(fetch=FetchType.LAZY)
@@ -35,7 +37,7 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(LocalDateTime date, String reason, String status, Patient patient, Doctor doctor) {
+    public Appointment(LocalDateTime date, String reason, AppointmentStatus status, Patient patient, Doctor doctor) {
         this.date = date;
         this.reason = reason;
         this.status = status;
@@ -67,11 +69,11 @@ public class Appointment {
         this.reason = reason;
     }
 
-    public String getStatus() {
+    public AppointmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AppointmentStatus status) {
         this.status = status;
     }
 

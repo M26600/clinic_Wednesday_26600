@@ -46,7 +46,6 @@ public class PatientController {
         patientService.deletePatient(id);
     }
 
-    // Quiz A1
     @GetMapping("/by-last-name")
     public List<Patient> getPatientsByLastName(@RequestParam String lastName) {
         return patientService.getPatientsByLastName(lastName);
