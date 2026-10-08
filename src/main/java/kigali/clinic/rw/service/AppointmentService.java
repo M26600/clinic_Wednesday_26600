@@ -28,6 +28,15 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
+    public String saveAppointmentNoDoubleBooking(Appointment appointment) {
+        long count = appointmentRepository.countByDoctorIdAndDate(appointment.getDoctor().getId(), appointment.getDate());
+        if (count > 0) {
+            return "Doctor is not available";
+        }
+        appointmentRepository.save(appointment);
+        return "Saved";
+    }
+
     public void deleteAppointment(UUID id) {
         appointmentRepository.deleteById(id);
     }

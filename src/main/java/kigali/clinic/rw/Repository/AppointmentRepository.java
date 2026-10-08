@@ -27,6 +27,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     List<Appointment> findByStatusOrderByDateAsc(AppointmentStatus status);
     List<Appointment> findByDateBetweenOrderByDateAsc(java.time.LocalDateTime start, java.time.LocalDateTime end);
+    long countByDoctorIdAndDate(UUID doctorId, java.time.LocalDateTime date);
 
     @Query("SELECT a.patient.names, a.doctor.lastName, a.date FROM Appointment a WHERE a.status = 'PENDING' AND a.date < CURRENT_TIMESTAMP")
     List<Object[]> findPastPendingAppointments();

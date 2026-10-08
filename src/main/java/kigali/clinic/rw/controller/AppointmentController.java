@@ -28,6 +28,11 @@ public class AppointmentController {
         return appointmentService.saveAppointment(appointment);
     }
 
+    @PostMapping("/save")
+    public String saveAppointmentNoDoubleBooking(@RequestBody Appointment appointment) {
+        return appointmentService.saveAppointmentNoDoubleBooking(appointment);
+    }
+
     @GetMapping("/{id}")
     public Appointment getAppointmentById(@PathVariable UUID id) {
         return appointmentService.getAppointmentById(id);
