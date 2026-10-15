@@ -19,6 +19,11 @@ public class Office {
 
     public Office() {}
 
+    public Office(String officeNumber, String buildingName) {
+        this.officeNumber = officeNumber;
+        this.buildingName = buildingName;
+    }
+
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
     public String getOfficeNumber() { return officeNumber; }

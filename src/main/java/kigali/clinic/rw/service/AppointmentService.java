@@ -4,7 +4,11 @@ import kigali.clinic.rw.Repository.AppointmentRepository;
 import kigali.clinic.rw.domain.Appointment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.time.LocalDate;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,9 +33,13 @@ public class AppointmentService {
     }
 
     public String saveAppointmentNoDoubleBooking(Appointment appointment) {
-        long count = appointmentRepository.countByDoctorIdAndDate(appointment.getDoctor().getId(), appointment.getDate());
-        if (count > 0) {
-            return "Doctor is not available";
+        boolean exists = appointmentRepository.existsByDoctorIdAndDateAndStatusNot(
+                appointment.getDoctor().getId(),
+                appointment.getDate(),
+                AppointmentStatus.CANCELLED
+        );
+        if (exists) {
+            return "Doctor is already booked on that date";
         }
         appointmentRepository.save(appointment);
         return "Saved";
@@ -45,9 +53,9 @@ public class AppointmentService {
         return appointmentRepository.findByStatusOrderByDateAsc(status);
     }
 
-    public List<Appointment> getAppointmentsBetween(java.time.LocalDate start, java.time.LocalDate end) {
-        java.time.LocalDateTime startDateTime = start.atStartOfDay();
-        java.time.LocalDateTime endDateTime = end.atTime(23, 59, 59, 999999999);
+    public List<Appointment> getAppointmentsBetween(LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(23, 59, 59, 999999999);
         return appointmentRepository.findByDateBetweenOrderByDateAsc(startDateTime, endDateTime);
     }
 
@@ -67,11 +75,30 @@ public class AppointmentService {
         return appointmentRepository.findAppointmentsByDoctorSpecialization(specName);
     }
 
-    public org.springframework.data.domain.Page<Appointment> getDoctorAppointmentsPaged(UUID doctorId, org.springframework.data.domain.Pageable pageable) {
+    public Page<Appointment> getDoctorAppointmentsPaged(UUID doctorId, Pageable pageable) {
         return appointmentRepository.findByDoctorId(doctorId, pageable);
     }
 
     public List<Object[]> getAppointmentStatsByStatus() {
         return appointmentRepository.countAppointmentsByStatus();
+    }
+
+    @Transactional
+    public String cancelDoctorDay(UUID doctorId, LocalDate date) {
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(23, 59, 59, 999999999);
+        int cancelled = appointmentRepository.cancelDoctorAppointmentsOnDate(doctorId, start, end);
+        return cancelled + " appointments cancelled";
+    }
+
+    public Page<Appointment> getAllAppointmentsPaged(Pageable pageable) {
+        return appointmentRepository.findAll(pageable);
+    }
+
+    @Transactional
+    public String deleteCancelledBefore(LocalDate date) {
+        LocalDateTime dateTime = date.atStartOfDay();
+        int deleted = appointmentRepository.deleteCancelledAppointmentsBefore(dateTime);
+        return deleted + " appointments deleted";
     }
 }

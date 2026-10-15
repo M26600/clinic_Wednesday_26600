@@ -134,6 +134,106 @@
           "path": ["api", "appointments", "stats", "by-status"]
         }
       }
+    },
+    {
+      "name": "A4: No double booking",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"date\": \"2026-10-20T10:00:00\",\n  \"reason\": \"General checkup\",\n  \"status\": \"SCHEDULED\",\n  \"doctor\": {\n    \"id\": \"00000000-0000-0000-0000-000000000001\"\n  },\n  \"patient\": {\n    \"id\": \"00000000-0000-0000-0000-000000000002\"\n  }\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/save",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "appointments", "save"]
+        }
+      }
+    },
+    {
+      "name": "C2: Frequent patients",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/patients/frequent?min=3",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "patients", "frequent"],
+          "query": [
+            { "key": "min", "value": "3" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "C3: Busiest office",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/offices/busiest",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "offices", "busiest"]
+        }
+      }
+    },
+    {
+      "name": "C4: Doctor is absent",
+      "request": {
+        "method": "PATCH",
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/cancel-day?doctorId=00000000-0000-0000-0000-000000000001&date=2026-10-20",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "appointments", "cancel-day"],
+          "query": [
+            { "key": "doctorId", "value": "00000000-0000-0000-0000-000000000001" },
+            { "key": "date", "value": "2026-10-20" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Bonus: Appointments page by page",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/page?page=0&size=5&sort=appointmentDate,desc",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "appointments", "page"],
+          "query": [
+            { "key": "page", "value": "0" },
+            { "key": "size", "value": "5" },
+            { "key": "sort", "value": "appointmentDate,desc" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Bonus: Clean old cancellations",
+      "request": {
+        "method": "DELETE",
+        "url": {
+          "raw": "http://localhost:8080/api/appointments/cancelled-before?date=2026-10-15",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "8080",
+          "path": ["api", "appointments", "cancelled-before"],
+          "query": [
+            { "key": "date", "value": "2026-10-15" }
+          ]
+        }
+      }
     }
   ]
 }

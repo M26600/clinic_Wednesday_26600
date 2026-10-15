@@ -1,14 +1,24 @@
 package kigali.clinic.rw.controller;
 
-import kigali.clinic.rw.service.DoctorService;
-import kigali.clinic.rw.service.SpecializationService;
-import kigali.clinic.rw.domain.Doctor;
-import kigali.clinic.rw.domain.Specialization;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import kigali.clinic.rw.domain.Doctor;
+import kigali.clinic.rw.domain.Specialization;
+import kigali.clinic.rw.service.DoctorService;
+import kigali.clinic.rw.service.SpecializationService;
 
 @RestController
 @RequestMapping("/api/doctors")
@@ -51,24 +61,23 @@ public class DoctorController {
         doctorService.deleteDoctor(id);
     }
 
-    @PostMapping("/{doctorId}/specializations/{specializationId}")
-    public Doctor assignSpecializationToDoctor(
+    @PutMapping("/{doctorId}/specializations/{specializationId}")
+    public ResponseEntity<String> addSpecializationToDoctor(
             @PathVariable UUID doctorId,
             @PathVariable UUID specializationId
     ) {
-        Doctor doctor = doctorService.getDoctorById(doctorId);
-        Specialization specialization = specializationService.getSpecializationById(specializationId);
-
-        if (doctor != null && specialization != null) {
-            doctor.getSpecializations().add(specialization);
-            return doctorService.saveDoctor(doctor);
+        String result = doctorService.addSpecializationToDoctor(doctorId, specializationId);
+        if (result.equals("The doctor with that id does not exist") || result.equals("That specialization does not exist")) {
+            return ResponseEntity.status(404).body(result);
+        } else if (result.equals("The doctor already has that specialization")) {
+            return ResponseEntity.status(409).body(result);
+        } else {
+            return ResponseEntity.status(200).body(result);
         }
-        return null;
     }
 
     @GetMapping("/by-specialization")
-    public List<Doctor> getDoctorsBySpecialization(@RequestParam(value="name") String name) {
-        // String lower = name.toLowerCase(); // not needed anymore handled in query
+    public List<Doctor> getDoctorsBySpecialization(@RequestParam(value = "name") String name) {
         return doctorService.getDoctorsBySpecialization(name);
     }
 

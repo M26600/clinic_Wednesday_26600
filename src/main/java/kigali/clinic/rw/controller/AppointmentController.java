@@ -1,15 +1,29 @@
 package kigali.clinic.rw.controller;
 
-import kigali.clinic.rw.service.AppointmentService;
-import kigali.clinic.rw.domain.Appointment;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.UUID;
+import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.domain.AppointmentStatus;
+import kigali.clinic.rw.service.AppointmentService;
 
 @RestController
 @RequestMapping("/api/appointments")
@@ -29,8 +43,12 @@ public class AppointmentController {
     }
 
     @PostMapping("/save")
-    public String saveAppointmentNoDoubleBooking(@RequestBody Appointment appointment) {
-        return appointmentService.saveAppointmentNoDoubleBooking(appointment);
+    public ResponseEntity<?> saveAppointmentNoDoubleBooking(@RequestBody Appointment appointment) {
+        String result = appointmentService.saveAppointmentNoDoubleBooking(appointment);
+        if ("Doctor is already booked on that date".equals(result)) {
+            return ResponseEntity.status(409).body(result);
+        }
+        return ResponseEntity.ok(appointment);
     }
 
     @GetMapping("/{id}")
@@ -56,14 +74,14 @@ public class AppointmentController {
     }
 
     @GetMapping("/by-status")
-    public List<Appointment> getAppointmentsByStatus(@RequestParam kigali.clinic.rw.domain.AppointmentStatus status) {
+    public List<Appointment> getAppointmentsByStatus(@RequestParam AppointmentStatus status) {
         return appointmentService.getAppointmentsByStatus(status);
     }
 
     @GetMapping("/between")
     public List<Appointment> getAppointmentsBetween(
-            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate start,
-            @RequestParam @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE) java.time.LocalDate end) {
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         return appointmentService.getAppointmentsBetween(start, end);
     }
 
@@ -96,5 +114,33 @@ public class AppointmentController {
     @GetMapping("/stats/by-status")
     public List<Object[]> getAppointmentsByStatusStats() {
         return appointmentService.getAppointmentStatsByStatus();
+    }
+
+    @PatchMapping("/cancel-day")
+    public String cancelDay(
+            @RequestParam UUID doctorId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return appointmentService.cancelDoctorDay(doctorId, date);
+    }
+
+    @GetMapping("/page")
+    public Page<Appointment> getAppointmentsPage(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "date,desc") String sort) {
+        String[] parts = sort.split(",");
+        String prop = parts[0];
+        if ("appointmentDate".equalsIgnoreCase(prop)) {
+            prop = "date";
+        }
+        Sort.Direction dir = (parts.length > 1 && "desc".equalsIgnoreCase(parts[1])) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        PageRequest pageable = PageRequest.of(page, size, Sort.by(dir, prop));
+        return appointmentService.getAllAppointmentsPaged(pageable);
+    }
+
+    @DeleteMapping("/cancelled-before")
+    public String deleteCancelledBefore(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return appointmentService.deleteCancelledBefore(date);
     }
 }

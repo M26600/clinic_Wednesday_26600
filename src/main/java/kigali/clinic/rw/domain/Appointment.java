@@ -1,37 +1,48 @@
 package kigali.clinic.rw.domain;
 
-import jakarta.persistence.*;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name="sys_appointment")
+@Table(name = "sys_appointment")
 public class Appointment {
-    
+
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    
-    @Column(name="appointment_date")
+
+    @Column(name = "appointment_date")
     private LocalDateTime date;
-    
+
     private String reason;
-    
+
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
-    
+
     // Ignore the 'appointments' list in Patient to prevent infinite recursion during JSON serialization
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="patient_id")
-    @JsonIgnoreProperties({"appointments", "hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_id")
+    @JsonIgnoreProperties("appointments")
     private Patient patient;
-    
+
     // Ignore the 'appointments' list in Doctor to prevent infinite recursion during JSON serialization
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="doctor_id")
-    @JsonIgnoreProperties({"appointments", "hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "doctor_id")
+    @JsonIgnoreProperties("appointments")
     private Doctor doctor;
 
     public Appointment() {

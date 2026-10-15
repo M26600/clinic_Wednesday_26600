@@ -29,4 +29,12 @@ public class OfficeService {
     public void deleteOffice(UUID id) {
         officeRepository.deleteById(id);
     }
+
+    public Object getBusiestOffice() {
+        List<Object[]> list = officeRepository.findBusiestOffice();
+        if (list.isEmpty()) {
+            return "No appointments yet";
+        }
+        return list.get(0);
+    }
 }

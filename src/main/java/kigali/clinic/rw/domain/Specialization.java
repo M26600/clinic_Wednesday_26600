@@ -29,4 +29,17 @@ public class Specialization {
     public void setName(String name) { this.name = name; }
     public Set<Doctor> getDoctors() { return doctors; }
     public void setDoctors(Set<Doctor> doctors) { this.doctors = doctors; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Specialization that = (Specialization) o;
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

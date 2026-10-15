@@ -45,4 +45,9 @@ public class OfficeController {
     public void deleteOffice(@PathVariable UUID id) {
         officeService.deleteOffice(id);
     }
+
+    @GetMapping("/busiest")
+    public Object getBusiestOffice() {
+        return officeService.getBusiestOffice();
+    }
 }

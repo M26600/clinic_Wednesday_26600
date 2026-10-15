@@ -4,7 +4,8 @@ import kigali.clinic.rw.service.PatientService;
 import kigali.clinic.rw.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
+import kigali.clinic.rw.service.DoctorService;
+import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.UUID;
 
@@ -16,7 +17,7 @@ public class PatientController {
     private PatientService patientService;
 
     @Autowired
-    private kigali.clinic.rw.service.DoctorService doctorService;
+    private DoctorService doctorService;
 
     @GetMapping
     public List<Patient> getAllPatients() {
@@ -37,7 +38,8 @@ public class PatientController {
     public Patient updatePatient(@PathVariable UUID id, @RequestBody Patient patientDetails) {
         Patient patient = patientService.getPatientById(id);
         if (patient != null) {
-            patient.setNames(patientDetails.getNames());
+            patient.setFirstName(patientDetails.getFirstName());
+            patient.setLastName(patientDetails.getLastName());
             patient.setPhone(patientDetails.getPhone());
             return patientService.savePatient(patient);
         }
@@ -55,14 +57,19 @@ public class PatientController {
     }
 
     @GetMapping("/of-doctor/{doctorId}")
-    public org.springframework.http.ResponseEntity<?> getPatientsOfDoctor(@PathVariable(value="doctorId") UUID doctorId) {
+    public ResponseEntity<?> getPatientsOfDoctor(@PathVariable(value = "doctorId") UUID doctorId) {
         Object doc = doctorService.getDoctorById(doctorId);
         if (doc == null) {
             String msg = "The doctor with that id does not exist";
-            return org.springframework.http.ResponseEntity.status(404).body(msg);
+            return ResponseEntity.status(404).body(msg);
         }
-        
+
         List<Patient> pts = patientService.getPatientsOfDoctor(doctorId);
-        return org.springframework.http.ResponseEntity.ok(pts);
+        return ResponseEntity.ok(pts);
+    }
+
+    @GetMapping("/frequent")
+    public List<Patient> getFrequentPatients(@RequestParam(defaultValue = "3") long min) {
+        return patientService.getFrequentPatients(min);
     }
 }

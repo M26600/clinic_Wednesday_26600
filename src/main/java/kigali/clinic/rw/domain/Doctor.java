@@ -21,7 +21,7 @@ public class Doctor {
     
     private LocalDate dateOfBirth;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     @JoinColumn(name = "office_id", referencedColumnName = "id")
     @JsonIgnoreProperties("doctor")
     private Office office;
