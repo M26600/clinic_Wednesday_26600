@@ -44,13 +44,19 @@ public class AppointmentService {
     }
 
     public String saveAppointmentNoDoubleBooking(Appointment appointment) {
-        boolean exists = appointmentRepository.existsByDoctorIdAndDateAndStatusNot(
-                appointment.getDoctor().getId(),
-                appointment.getDate(),
-                AppointmentStatus.CANCELLED
-        );
-        if (exists) {
-            return "Doctor is already booked on that date";
+        if (appointment.getDate() != null && appointment.getDate().toLocalDate().isBefore(LocalDate.now())) {
+            return "Appointment date cannot be in the past";
+        }
+        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        if (appointment.getDoctor() != null && appointment.getDoctor().getId() != null) {
+            boolean exists = appointmentRepository.existsByDoctorIdAndDateAndStatusNot(
+                    appointment.getDoctor().getId(),
+                    appointment.getDate(),
+                    AppointmentStatus.CANCELLED
+            );
+            if (exists) {
+                return "Doctor is already booked on that date";
+            }
         }
         appointmentRepository.save(appointment);
         return "Saved";

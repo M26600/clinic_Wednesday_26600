@@ -44,10 +44,13 @@ public class AppointmentController {
     @PostMapping("/save")
     public ResponseEntity<?> saveAppointmentNoDoubleBooking(@RequestBody Appointment appointment) {
         String result = appointmentService.saveAppointmentNoDoubleBooking(appointment);
-        if ("Doctor is already booked on that date".equals(result)) {
+        if ("Appointment date cannot be in the past".equals(result)) {
+            return ResponseEntity.status(400).body(result);
+        } else if ("Doctor is already booked on that date".equals(result)) {
             return ResponseEntity.status(409).body(result);
+        } else {
+            return ResponseEntity.ok(appointment);
         }
-        return ResponseEntity.ok(appointment);
     }
 
     @GetMapping("/{id}")
