@@ -37,10 +37,33 @@ public class AppointmentService {
         if (apt != null) {
             apt.setDate(details.getDate());
             apt.setReason(details.getReason());
-            apt.setStatus(details.getStatus());
             return appointmentRepository.save(apt);
         }
         return null;
+    }
+
+    public String updateAppointmentStatus(UUID id, AppointmentStatus newStatus) {
+        Appointment appointment = appointmentRepository.findById(id).orElse(null);
+        if (appointment == null) {
+            return "The appointment with that id does not exist";
+        }
+        AppointmentStatus current = appointment.getStatus();
+        boolean allowed = false;
+        if (current == AppointmentStatus.SCHEDULED) {
+            if (newStatus == AppointmentStatus.CONFIRMED || newStatus == AppointmentStatus.CANCELLED) {
+                allowed = true;
+            }
+        } else if (current == AppointmentStatus.CONFIRMED) {
+            if (newStatus == AppointmentStatus.COMPLETED || newStatus == AppointmentStatus.CANCELLED) {
+                allowed = true;
+            }
+        }
+        if (!allowed) {
+            return "Cannot change status from " + current + " to " + newStatus;
+        }
+        appointment.setStatus(newStatus);
+        appointmentRepository.save(appointment);
+        return "Appointment status updated successfully";
     }
 
     public String saveAppointmentNoDoubleBooking(Appointment appointment) {

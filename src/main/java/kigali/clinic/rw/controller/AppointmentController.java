@@ -63,6 +63,21 @@ public class AppointmentController {
         return appointmentService.updateAppointment(id, details);
     }
 
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<String> updateAppointmentStatus(
+            @PathVariable UUID id,
+            @RequestParam AppointmentStatus status
+    ) {
+        String result = appointmentService.updateAppointmentStatus(id, status);
+        if (result.equals("The appointment with that id does not exist")) {
+            return ResponseEntity.status(404).body(result);
+        } else if (result.startsWith("Cannot change status from")) {
+            return ResponseEntity.status(400).body(result);
+        } else {
+            return ResponseEntity.status(200).body(result);
+        }
+    }
+
     @DeleteMapping("/{id}")
     public void deleteAppointment(@PathVariable UUID id) {
         appointmentService.deleteAppointment(id);
