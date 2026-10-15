@@ -1,6 +1,7 @@
 package kigali.clinic.rw.controller;
 
 import kigali.clinic.rw.service.PatientService;
+import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.Patient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -64,5 +65,15 @@ public class PatientController {
     @GetMapping("/frequent")
     public List<Patient> getFrequentPatients(@RequestParam(defaultValue = "3") long min) {
         return patientService.getFrequentPatients(min);
+    }
+
+    @GetMapping("/{ssNumber}/upcoming")
+    public ResponseEntity<?> getUpcomingAppointments(@PathVariable String ssNumber) {
+        Patient patient = patientService.getPatientBySsNumber(ssNumber);
+        if (patient == null) {
+            return ResponseEntity.status(404).body("That patient with that ssnumber does not exist");
+        }
+        List<Appointment> list = patientService.getUpcomingAppointments(ssNumber);
+        return ResponseEntity.ok(list);
     }
 }

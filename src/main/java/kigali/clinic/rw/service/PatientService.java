@@ -1,18 +1,27 @@
 package kigali.clinic.rw.service;
 
-import kigali.clinic.rw.Repository.PatientRepository;
-import kigali.clinic.rw.domain.Patient;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
+import kigali.clinic.rw.Repository.AppointmentRepository;
+import kigali.clinic.rw.Repository.PatientRepository;
+import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.domain.AppointmentStatus;
+import kigali.clinic.rw.domain.Patient;
 
 @Service
 public class PatientService {
 
     @Autowired
     private PatientRepository patientRepository;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     public List<Patient> getAllPatients() {
         return patientRepository.findAll();
@@ -52,5 +61,15 @@ public class PatientService {
 
     public List<Patient> getFrequentPatients(long min) {
         return patientRepository.findFrequentPatients(min);
+    }
+
+    public Patient getPatientBySsNumber(String ssNumber) {
+        return patientRepository.findBySsNumber(ssNumber).orElse(null);
+    }
+
+    public List<Appointment> getUpcomingAppointments(String ssNumber) {
+        LocalDateTime today = LocalDate.now().atStartOfDay();
+        List<AppointmentStatus> statuses = List.of(AppointmentStatus.SCHEDULED, AppointmentStatus.CONFIRMED);
+        return appointmentRepository.findByPatientSsNumberAndDateGreaterThanEqualAndStatusInOrderByDateAsc(ssNumber, today, statuses);
     }
 }

@@ -1,6 +1,7 @@
 package kigali.clinic.rw.Repository;
 
 import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.domain.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -44,6 +45,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     boolean existsByDoctorIdAndDateBetweenAndStatusNotAndIdNot(UUID doctorId, LocalDateTime start, LocalDateTime end, AppointmentStatus status, UUID id);
 
     List<Appointment> findByDoctorIdAndDateBetweenAndStatusNot(UUID doctorId, LocalDateTime start, LocalDateTime end, AppointmentStatus status);
+
+    List<Appointment> findByPatientSsNumberAndDateGreaterThanEqualAndStatusInOrderByDateAsc(String ssNumber, LocalDateTime date, List<AppointmentStatus> statuses);
+
+    List<Appointment> findByPatientAndDateGreaterThanEqualAndStatusInOrderByDateAsc(Patient patient, LocalDateTime date, List<AppointmentStatus> statuses);
 
     @Query("SELECT a.patient.firstName, a.patient.lastName, a.doctor.lastName, a.date FROM Appointment a WHERE a.status = 'PENDING' AND a.date < CURRENT_TIMESTAMP")
     List<Object[]> findPastPendingAppointments();
