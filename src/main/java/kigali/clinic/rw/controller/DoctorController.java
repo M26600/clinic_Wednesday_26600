@@ -130,4 +130,12 @@ public class DoctorController {
     public List<Doctor> searchDoctorsByName(@RequestParam String name) {
         return doctorService.searchDoctorsByName(name);
     }
+
+    @GetMapping("/workload")
+    public List<Object[]> getDoctorWorkload(
+            @RequestParam LocalDate start,
+            @RequestParam LocalDate end
+    ) {
+        return doctorService.getDoctorWorkload(start, end);
+    }
 }

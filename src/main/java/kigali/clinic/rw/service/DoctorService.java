@@ -142,4 +142,10 @@ public class DoctorService {
     public List<Doctor> searchDoctorsByName(String name) {
         return doctorRepository.searchByName(name);
     }
+
+    public List<Object[]> getDoctorWorkload(LocalDate start, LocalDate end) {
+        LocalDateTime startDateTime = start.atStartOfDay();
+        LocalDateTime endDateTime = end.atTime(23, 59, 59, 999999999);
+        return doctorRepository.getDoctorWorkload(startDateTime, endDateTime, AppointmentStatus.COMPLETED);
+    }
 }

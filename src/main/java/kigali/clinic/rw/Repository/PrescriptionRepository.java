@@ -18,4 +18,7 @@ public interface PrescriptionRepository extends JpaRepository<Prescription, UUID
     List<Prescription> findByPatientSsNumber(@Param("ssNumber") String ssNumber);
 
     boolean existsByAppointment(Appointment appointment);
+
+    @Query("SELECT p.medicineName, COUNT(p) FROM Prescription p GROUP BY p.medicineName ORDER BY COUNT(p) DESC")
+    List<Object[]> findTopMedicines();
 }

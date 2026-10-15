@@ -66,4 +66,8 @@ public class PrescriptionService {
         prescriptionRepository.delete(prescription);
         return "Prescription deleted successfully";
     }
+
+    public List<Object[]> getTopMedicines() {
+        return prescriptionRepository.findTopMedicines();
+    }
 }
