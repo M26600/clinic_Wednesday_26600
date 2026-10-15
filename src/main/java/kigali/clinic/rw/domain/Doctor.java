@@ -41,6 +41,10 @@ public class Doctor {
 
     public Doctor() {}
 
+    public Doctor(UUID id) {
+        this.id = id;
+    }
+
     public Doctor(String firstName, String lastName, LocalDate dateOfBirth, Office office) {
         this.firstName = firstName;
         this.lastName = lastName;

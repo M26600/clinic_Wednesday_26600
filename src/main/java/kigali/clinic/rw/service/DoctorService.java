@@ -1,5 +1,7 @@
 package kigali.clinic.rw.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -7,9 +9,12 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import kigali.clinic.rw.Repository.AppointmentRepository;
 import kigali.clinic.rw.Repository.DoctorRepository;
 import kigali.clinic.rw.Repository.OfficeRepository;
 import kigali.clinic.rw.Repository.SpecializationRepository;
+import kigali.clinic.rw.domain.Appointment;
+import kigali.clinic.rw.domain.AppointmentStatus;
 import kigali.clinic.rw.domain.Doctor;
 import kigali.clinic.rw.domain.Office;
 import kigali.clinic.rw.domain.Specialization;
@@ -26,6 +31,9 @@ public class DoctorService {
 
     @Autowired
     private SpecializationRepository specializationRepository;
+
+    @Autowired
+    private AppointmentRepository appointmentRepository;
 
     public String addSpecializationToDoctor(UUID doctorId, UUID specializationId) {
         Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
@@ -123,5 +131,11 @@ public class DoctorService {
 
     public List<Doctor> getDoctorsWithoutOffice() {
         return doctorRepository.findDoctorsWithoutOffice();
+    }
+
+    public List<Appointment> getDoctorAgenda(UUID doctorId, LocalDate date) {
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.atTime(23, 59, 59, 999999999);
+        return appointmentRepository.findByDoctorIdAndDateBetweenAndStatusNot(doctorId, start, end, AppointmentStatus.CANCELLED);
     }
 }
