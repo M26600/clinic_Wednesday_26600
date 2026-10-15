@@ -1,6 +1,7 @@
 package kigali.clinic.rw.service;
 
 import kigali.clinic.rw.Repository.AppointmentRepository;
+import kigali.clinic.rw.Repository.PrescriptionRepository;
 import kigali.clinic.rw.domain.Appointment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,9 @@ public class AppointmentService {
 
     @Autowired
     private AppointmentRepository appointmentRepository;
+
+    @Autowired
+    private PrescriptionRepository prescriptionRepository;
 
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
@@ -124,8 +128,16 @@ public class AppointmentService {
         return "Saved";
     }
 
-    public void deleteAppointment(UUID id) {
-        appointmentRepository.deleteById(id);
+    public String deleteAppointment(UUID id) {
+        Appointment appointment = appointmentRepository.findById(id).orElse(null);
+        if (appointment == null) {
+            return "The appointment with that id does not exist";
+        }
+        if (prescriptionRepository.existsByAppointment(appointment)) {
+            return "That appointment has prescriptions, delete them first";
+        }
+        appointmentRepository.delete(appointment);
+        return "Appointment deleted successfully";
     }
 
     public List<Appointment> getAppointmentsByStatus(AppointmentStatus status) {
