@@ -76,6 +76,21 @@ public class DoctorController {
         }
     }
 
+    @DeleteMapping("/{doctorId}/specializations/{specializationId}")
+    public ResponseEntity<String> removeSpecializationFromDoctor(
+            @PathVariable UUID doctorId,
+            @PathVariable UUID specializationId
+    ) {
+        String result = doctorService.removeSpecializationFromDoctor(doctorId, specializationId);
+        if (result.equals("The doctor with that id does not exist") || result.equals("That specialization does not exist")) {
+            return ResponseEntity.status(404).body(result);
+        } else if (result.equals("The doctor does not have that specialization")) {
+            return ResponseEntity.status(409).body(result);
+        } else {
+            return ResponseEntity.status(200).body(result);
+        }
+    }
+
     @GetMapping("/by-specialization")
     public List<Doctor> getDoctorsBySpecialization(@RequestParam(value = "name") String name) {
         return doctorService.getDoctorsBySpecialization(name);

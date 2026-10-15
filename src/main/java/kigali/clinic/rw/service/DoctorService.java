@@ -1,19 +1,21 @@
 package kigali.clinic.rw.service;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import kigali.clinic.rw.Repository.DoctorRepository;
 import kigali.clinic.rw.Repository.OfficeRepository;
 import kigali.clinic.rw.Repository.SpecializationRepository;
 import kigali.clinic.rw.domain.Doctor;
 import kigali.clinic.rw.domain.Office;
 import kigali.clinic.rw.domain.Specialization;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.UUID;
 
 @Service
+
 public class DoctorService {
 
     @Autowired
@@ -45,6 +47,23 @@ public class DoctorService {
         return "Specialization added to the doctor";
     }
 
+    public String removeSpecializationFromDoctor(UUID doctorId, UUID specializationId) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+        if (doctor == null) {
+            return "The doctor with that id does not exist";
+        }
+        Specialization spec = specializationRepository.findById(specializationId).orElse(null);
+        if (spec == null) {
+            return "That specialization does not exist";
+        }
+        if (doctor.getSpecializations() == null || !doctor.getSpecializations().contains(spec)) {
+            return "The doctor does not have that specialization";
+        }
+        doctor.getSpecializations().remove(spec);
+        doctorRepository.save(doctor);
+        return "Specialization removed from the doctor";
+    }
+
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
@@ -66,9 +85,7 @@ public class DoctorService {
     }
 
     public List<Doctor> getDoctorsBySpecialization(String name) {
-        // System.out.println("fetching doctors for spec " + name);
-        List<Doctor> res = doctorRepository.findBySpecializationNameIgnoreCaseJoin(name);
-        return res;
+        return doctorRepository.findBySpecializationName(name);
     }
 
     public List<Doctor> getDoctorsWithoutOffice() {
