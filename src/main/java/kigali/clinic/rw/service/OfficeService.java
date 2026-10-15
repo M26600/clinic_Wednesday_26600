@@ -26,8 +26,22 @@ public class OfficeService {
         return officeRepository.save(office);
     }
 
+    public Office updateOffice(UUID id, Office officeDetails) {
+        Office office = officeRepository.findById(id).orElse(null);
+        if (office != null) {
+            office.setOfficeNumber(officeDetails.getOfficeNumber());
+            office.setBuildingName(officeDetails.getBuildingName());
+            return officeRepository.save(office);
+        }
+        return null;
+    }
+
     public void deleteOffice(UUID id) {
         officeRepository.deleteById(id);
+    }
+
+    public List<Office> getFreeOffices() {
+        return officeRepository.findFreeOffices();
     }
 
     public Object getBusiestOffice() {

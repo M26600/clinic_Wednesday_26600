@@ -33,13 +33,11 @@ public class Appointment {
     @Enumerated(EnumType.STRING)
     private AppointmentStatus status;
 
-    // Ignore the 'appointments' list in Patient to prevent infinite recursion during JSON serialization
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "patient_id")
     @JsonIgnoreProperties("appointments")
     private Patient patient;
 
-    // Ignore the 'appointments' list in Doctor to prevent infinite recursion during JSON serialization
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "doctor_id")
     @JsonIgnoreProperties("appointments")

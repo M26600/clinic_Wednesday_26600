@@ -28,7 +28,9 @@ public interface OfficeRepository extends JpaRepository<Office, UUID> {
     @Query("SELECT o FROM Office o WHERE o.doctor IS NOT NULL")
     List<Office> findOccupiedOffices();
 
-    // C3: Busiest office (navigate Appointment -> Doctor -> Office)
+    @Query("SELECT o FROM Office o WHERE NOT EXISTS (SELECT d FROM Doctor d WHERE d.office = o) ORDER BY o.officeNumber ASC")
+    List<Office> findFreeOffices();
+
     @Query("SELECT a.doctor.office.buildingName, a.doctor.office.officeNumber, COUNT(a) FROM Appointment a WHERE a.doctor.office IS NOT NULL GROUP BY a.doctor.office.buildingName, a.doctor.office.officeNumber ORDER BY COUNT(a) DESC")
     List<Object[]> findBusiestOffice();
 }

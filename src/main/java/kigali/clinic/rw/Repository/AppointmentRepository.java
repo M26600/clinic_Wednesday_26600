@@ -37,7 +37,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     long countByDoctorIdAndDate(UUID doctorId, LocalDateTime date);
 
-    // A4: Derived existsBy, And, Not
     boolean existsByDoctorIdAndDateAndStatusNot(UUID doctorId, LocalDateTime date, AppointmentStatus status);
 
     @Query("SELECT a.patient.firstName, a.patient.lastName, a.doctor.lastName, a.date FROM Appointment a WHERE a.status = 'PENDING' AND a.date < CURRENT_TIMESTAMP")
@@ -54,12 +53,10 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
     @Query("SELECT a.status, COUNT(a) FROM Appointment a GROUP BY a.status")
     List<Object[]> countAppointmentsByStatus();
 
-    // C4: cancel doctor day (except COMPLETED)
     @Modifying
-    @Query("UPDATE Appointment a SET a.status = 'CANCELLED' WHERE a.doctor.id = :doctorId AND a.date BETWEEN :start AND :end AND a.status != kigali.clinic.rw.domain.AppointmentStatus.COMPLETED")
+    @Query("UPDATE Appointment a SET a.status = 'CANCELLED' WHERE a.doctor.id = :doctorId AND a.date BETWEEN :start AND :end AND a.status != 'COMPLETED'")
     int cancelDoctorAppointmentsOnDate(@Param("doctorId") UUID doctorId, @Param("start") LocalDateTime start, @Param("end") LocalDateTime end);
 
-    // Bonus: delete cancelled before date
     @Modifying
     @Query("DELETE FROM Appointment a WHERE a.status = 'CANCELLED' AND a.date < :date")
     int deleteCancelledAppointmentsBefore(@Param("date") LocalDateTime date);

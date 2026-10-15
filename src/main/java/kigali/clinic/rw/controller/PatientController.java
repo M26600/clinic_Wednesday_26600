@@ -36,14 +36,7 @@ public class PatientController {
 
     @PutMapping("/{id}")
     public Patient updatePatient(@PathVariable UUID id, @RequestBody Patient patientDetails) {
-        Patient patient = patientService.getPatientById(id);
-        if (patient != null) {
-            patient.setFirstName(patientDetails.getFirstName());
-            patient.setLastName(patientDetails.getLastName());
-            patient.setPhone(patientDetails.getPhone());
-            return patientService.savePatient(patient);
-        }
-        return null;
+        return patientService.updatePatient(id, patientDetails);
     }
 
     @DeleteMapping("/{id}")

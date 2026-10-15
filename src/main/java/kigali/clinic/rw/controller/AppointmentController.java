@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,14 +57,7 @@ public class AppointmentController {
 
     @PutMapping("/{id}")
     public Appointment updateAppointment(@PathVariable UUID id, @RequestBody Appointment details) {
-        Appointment apt = appointmentService.getAppointmentById(id);
-        if (apt != null) {
-            apt.setDate(details.getDate());
-            apt.setReason(details.getReason());
-            apt.setStatus(details.getStatus());
-            return appointmentService.saveAppointment(apt);
-        }
-        return null;
+        return appointmentService.updateAppointment(id, details);
     }
 
     @DeleteMapping("/{id}")
@@ -80,8 +72,8 @@ public class AppointmentController {
 
     @GetMapping("/between")
     public List<Appointment> getAppointmentsBetween(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+            @RequestParam LocalDate start,
+            @RequestParam LocalDate end) {
         return appointmentService.getAppointmentsBetween(start, end);
     }
 
@@ -119,7 +111,7 @@ public class AppointmentController {
     @PatchMapping("/cancel-day")
     public String cancelDay(
             @RequestParam UUID doctorId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam LocalDate date) {
         return appointmentService.cancelDoctorDay(doctorId, date);
     }
 
@@ -140,7 +132,7 @@ public class AppointmentController {
 
     @DeleteMapping("/cancelled-before")
     public String deleteCancelledBefore(
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @RequestParam LocalDate date) {
         return appointmentService.deleteCancelledBefore(date);
     }
 }

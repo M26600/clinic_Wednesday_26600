@@ -32,18 +32,17 @@ public class OfficeController {
 
     @PutMapping("/{id}")
     public Office updateOffice(@PathVariable UUID id, @RequestBody Office officeDetails) {
-        Office existingOffice = officeService.getOfficeById(id);
-        if (existingOffice != null) {
-            existingOffice.setOfficeNumber(officeDetails.getOfficeNumber());
-            existingOffice.setBuildingName(officeDetails.getBuildingName());
-            return officeService.saveOffice(existingOffice);
-        }
-        return null;
+        return officeService.updateOffice(id, officeDetails);
     }
 
     @DeleteMapping("/{id}")
     public void deleteOffice(@PathVariable UUID id) {
         officeService.deleteOffice(id);
+    }
+
+    @GetMapping("/free")
+    public List<Office> getFreeOffices() {
+        return officeService.getFreeOffices();
     }
 
     @GetMapping("/busiest")

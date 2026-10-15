@@ -26,6 +26,18 @@ public class PatientService {
         return patientRepository.save(patient);
     }
 
+    public Patient updatePatient(UUID id, Patient patientDetails) {
+        Patient patient = patientRepository.findById(id).orElse(null);
+        if (patient != null) {
+            patient.setFirstName(patientDetails.getFirstName());
+            patient.setLastName(patientDetails.getLastName());
+            patient.setPhone(patientDetails.getPhone());
+            patient.setSsNumber(patientDetails.getSsNumber());
+            return patientRepository.save(patient);
+        }
+        return null;
+    }
+
     public void deletePatient(UUID id) {
         patientRepository.deleteById(id);
     }

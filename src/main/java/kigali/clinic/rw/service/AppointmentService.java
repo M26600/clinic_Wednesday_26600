@@ -32,6 +32,17 @@ public class AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
+    public Appointment updateAppointment(UUID id, Appointment details) {
+        Appointment apt = appointmentRepository.findById(id).orElse(null);
+        if (apt != null) {
+            apt.setDate(details.getDate());
+            apt.setReason(details.getReason());
+            apt.setStatus(details.getStatus());
+            return appointmentRepository.save(apt);
+        }
+        return null;
+    }
+
     public String saveAppointmentNoDoubleBooking(Appointment appointment) {
         boolean exists = appointmentRepository.existsByDoctorIdAndDateAndStatusNot(
                 appointment.getDoctor().getId(),

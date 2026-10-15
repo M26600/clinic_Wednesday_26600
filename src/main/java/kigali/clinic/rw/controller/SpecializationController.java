@@ -32,12 +32,7 @@ public class SpecializationController {
 
     @PutMapping("/{id}")
     public Specialization updateSpecialization(@PathVariable UUID id, @RequestBody Specialization details) {
-        Specialization existing = specializationService.getSpecializationById(id);
-        if (existing != null) {
-            existing.setName(details.getName());
-            return specializationService.saveSpecialization(existing);
-        }
-        return null;
+        return specializationService.updateSpecialization(id, details);
     }
 
     @DeleteMapping("/{id}")
@@ -47,8 +42,6 @@ public class SpecializationController {
 
     @GetMapping("/unused")
     public List<Specialization> getUnusedSpecializations() {
-        List<Specialization> unused = specializationService.getUnusedSpecializations();
-        // System.out.println(unused.size());
-        return unused;
+        return specializationService.getUnusedSpecializations();
     }
 }

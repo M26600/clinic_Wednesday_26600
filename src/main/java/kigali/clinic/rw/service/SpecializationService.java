@@ -26,6 +26,15 @@ public class SpecializationService {
         return specializationRepository.save(specialization);
     }
 
+    public Specialization updateSpecialization(UUID id, Specialization details) {
+        Specialization spec = specializationRepository.findById(id).orElse(null);
+        if (spec != null) {
+            spec.setName(details.getName());
+            return specializationRepository.save(spec);
+        }
+        return null;
+    }
+
     public void deleteSpecialization(UUID id) {
         specializationRepository.deleteById(id);
     }

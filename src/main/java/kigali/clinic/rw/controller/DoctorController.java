@@ -47,13 +47,7 @@ public class DoctorController {
 
     @PutMapping("/{id}")
     public Doctor updateDoctor(@PathVariable UUID id, @RequestBody Doctor doctorDetails) {
-        Doctor existingDoctor = doctorService.getDoctorById(id);
-        if (existingDoctor != null) {
-            existingDoctor.setFirstName(doctorDetails.getFirstName());
-            existingDoctor.setLastName(doctorDetails.getLastName());
-            return doctorService.saveDoctor(existingDoctor);
-        }
-        return null;
+        return doctorService.updateDoctor(id, doctorDetails);
     }
 
     @DeleteMapping("/{id}")

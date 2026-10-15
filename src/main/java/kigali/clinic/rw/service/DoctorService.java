@@ -80,6 +80,21 @@ public class DoctorService {
         return doctorRepository.save(doctor);
     }
 
+    public Doctor updateDoctor(UUID id, Doctor doctorDetails) {
+        Doctor doctor = doctorRepository.findById(id).orElse(null);
+        if (doctor != null) {
+            doctor.setFirstName(doctorDetails.getFirstName());
+            doctor.setLastName(doctorDetails.getLastName());
+            doctor.setDateOfBirth(doctorDetails.getDateOfBirth());
+            if (doctorDetails.getOffice() != null && doctorDetails.getOffice().getId() != null) {
+                Office existingOffice = officeRepository.findById(doctorDetails.getOffice().getId()).orElse(null);
+                doctor.setOffice(existingOffice);
+            }
+            return doctorRepository.save(doctor);
+        }
+        return null;
+    }
+
     public void deleteDoctor(UUID id) {
         doctorRepository.deleteById(id);
     }
