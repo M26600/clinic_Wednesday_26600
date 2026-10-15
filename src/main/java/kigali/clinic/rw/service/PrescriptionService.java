@@ -8,6 +8,7 @@ import kigali.clinic.rw.domain.Prescription;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -31,5 +32,13 @@ public class PrescriptionService {
         prescription.setAppointment(appointment);
         prescriptionRepository.save(prescription);
         return "Prescription saved successfully";
+    }
+
+    public Appointment getAppointmentById(UUID appointmentId) {
+        return appointmentRepository.findById(appointmentId).orElse(null);
+    }
+
+    public List<Prescription> getPrescriptionsByAppointment(Appointment appointment) {
+        return prescriptionRepository.findByAppointment(appointment);
     }
 }

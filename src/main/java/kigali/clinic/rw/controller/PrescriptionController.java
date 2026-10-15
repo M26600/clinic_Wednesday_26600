@@ -1,14 +1,18 @@
 package kigali.clinic.rw.controller;
 
+import kigali.clinic.rw.domain.Appointment;
 import kigali.clinic.rw.domain.Prescription;
 import kigali.clinic.rw.service.PrescriptionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -31,5 +35,15 @@ public class PrescriptionController {
         } else {
             return ResponseEntity.status(201).body(result);
         }
+    }
+
+    @GetMapping("/appointment/{appointmentId}")
+    public ResponseEntity<?> getPrescriptionsByAppointment(@PathVariable UUID appointmentId) {
+        Appointment appointment = prescriptionService.getAppointmentById(appointmentId);
+        if (appointment == null) {
+            return ResponseEntity.status(404).body("The appointment with that id does not exist");
+        }
+        List<Prescription> list = prescriptionService.getPrescriptionsByAppointment(appointment);
+        return ResponseEntity.ok(list);
     }
 }
