@@ -30,6 +30,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, UUID> 
 
     long countByStatus(AppointmentStatus status);
 
+    long countByDateBetween(LocalDateTime start, LocalDateTime end);
+
     List<Appointment> findTop5ByDoctorIdOrderByDateDesc(UUID doctorId);
 
     List<Appointment> findByStatusOrderByDateAsc(AppointmentStatus status);
