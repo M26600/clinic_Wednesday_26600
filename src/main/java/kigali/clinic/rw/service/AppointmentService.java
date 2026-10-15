@@ -66,6 +66,45 @@ public class AppointmentService {
         return "Appointment status updated successfully";
     }
 
+    public String rescheduleAppointment(UUID id, LocalDate newDate) {
+        Appointment appointment = appointmentRepository.findById(id).orElse(null);
+        if (appointment == null) {
+            return "The appointment with that id does not exist";
+        }
+        if (appointment.getStatus() == AppointmentStatus.COMPLETED) {
+            return "A COMPLETED appointment cannot be rescheduled";
+        }
+        if (appointment.getStatus() == AppointmentStatus.CANCELLED) {
+            return "A CANCELLED appointment cannot be rescheduled";
+        }
+        if (newDate.isBefore(LocalDate.now())) {
+            return "Appointment date cannot be in the past";
+        }
+        if (appointment.getDoctor() == null || appointment.getDoctor().getId() == null) {
+            return "Appointment has no doctor assigned";
+        }
+        LocalDateTime start = newDate.atStartOfDay();
+        LocalDateTime end = newDate.atTime(23, 59, 59, 999999999);
+        boolean exists = appointmentRepository.existsByDoctorIdAndDateBetweenAndStatusNotAndIdNot(
+                appointment.getDoctor().getId(),
+                start,
+                end,
+                AppointmentStatus.CANCELLED,
+                appointment.getId()
+        );
+        if (exists) {
+            return "Doctor is already booked on that date";
+        }
+        if (appointment.getDate() != null) {
+            appointment.setDate(newDate.atTime(appointment.getDate().toLocalTime()));
+        } else {
+            appointment.setDate(newDate.atStartOfDay());
+        }
+        appointment.setStatus(AppointmentStatus.SCHEDULED);
+        appointmentRepository.save(appointment);
+        return "Appointment rescheduled successfully";
+    }
+
     public String saveAppointmentNoDoubleBooking(Appointment appointment) {
         if (appointment.getDate() != null && appointment.getDate().toLocalDate().isBefore(LocalDate.now())) {
             return "Appointment date cannot be in the past";
