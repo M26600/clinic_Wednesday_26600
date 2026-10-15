@@ -41,4 +41,8 @@ public class PrescriptionService {
     public List<Prescription> getPrescriptionsByAppointment(Appointment appointment) {
         return prescriptionRepository.findByAppointment(appointment);
     }
+
+    public List<Prescription> getPrescriptionsByPatientSsNumber(String ssNumber) {
+        return prescriptionRepository.findByPatientSsNumber(ssNumber);
+    }
 }

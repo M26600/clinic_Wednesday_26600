@@ -46,4 +46,10 @@ public class PrescriptionController {
         List<Prescription> list = prescriptionService.getPrescriptionsByAppointment(appointment);
         return ResponseEntity.ok(list);
     }
+
+    @GetMapping("/patient/{ssNumber}")
+    public ResponseEntity<List<Prescription>> getPrescriptionsByPatient(@PathVariable String ssNumber) {
+        List<Prescription> list = prescriptionService.getPrescriptionsByPatientSsNumber(ssNumber);
+        return ResponseEntity.ok(list);
+    }
 }
