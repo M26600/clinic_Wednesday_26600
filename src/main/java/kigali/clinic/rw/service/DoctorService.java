@@ -138,4 +138,8 @@ public class DoctorService {
         LocalDateTime end = date.atTime(23, 59, 59, 999999999);
         return appointmentRepository.findByDoctorIdAndDateBetweenAndStatusNot(doctorId, start, end, AppointmentStatus.CANCELLED);
     }
+
+    public List<Doctor> searchDoctorsByName(String name) {
+        return doctorRepository.searchByName(name);
+    }
 }

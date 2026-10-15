@@ -125,4 +125,9 @@ public class DoctorController {
         List<Appointment> agenda = doctorService.getDoctorAgenda(doctorId, date);
         return ResponseEntity.ok(agenda);
     }
+
+    @GetMapping("/search")
+    public List<Doctor> searchDoctorsByName(@RequestParam String name) {
+        return doctorService.searchDoctorsByName(name);
+    }
 }
