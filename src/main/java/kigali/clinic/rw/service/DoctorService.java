@@ -64,6 +64,24 @@ public class DoctorService {
         return "Specialization removed from the doctor";
     }
 
+    public String changeDoctorOffice(UUID doctorId, String officeNumber) {
+        Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+        if (doctor == null) {
+            return "The doctor with that id does not exist";
+        }
+        List<Office> offices = officeRepository.findByOfficeNumber(officeNumber);
+        if (offices.isEmpty()) {
+            return "The office with that office number does not exist";
+        }
+        Office office = offices.get(0);
+        if (doctorRepository.existsByOffice(office)) {
+            return "That office is taken by other doctor";
+        }
+        doctor.setOffice(office);
+        doctorRepository.save(doctor);
+        return "Office changed successfully";
+    }
+
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }

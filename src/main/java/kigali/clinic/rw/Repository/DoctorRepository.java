@@ -1,6 +1,7 @@
 package kigali.clinic.rw.Repository;
 
 import kigali.clinic.rw.domain.Doctor;
+import kigali.clinic.rw.domain.Office;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,6 +30,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, UUID> {
     long countByOffice_BuildingName(String buildingName);
 
     boolean existsByFirstNameAndLastName(String firstName, String lastName);
+
+    boolean existsByOffice(Office office);
 
     @Query("SELECT d FROM Doctor d JOIN d.specializations s WHERE LOWER(s.name) = LOWER(:name)")
     List<Doctor> findBySpecializationName(@Param("name") String name);

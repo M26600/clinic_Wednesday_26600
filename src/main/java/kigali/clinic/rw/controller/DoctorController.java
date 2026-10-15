@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -79,6 +80,21 @@ public class DoctorController {
         if (result.equals("The doctor with that id does not exist") || result.equals("That specialization does not exist")) {
             return ResponseEntity.status(404).body(result);
         } else if (result.equals("The doctor does not have that specialization")) {
+            return ResponseEntity.status(409).body(result);
+        } else {
+            return ResponseEntity.status(200).body(result);
+        }
+    }
+
+    @PatchMapping("/{doctorId}/office")
+    public ResponseEntity<String> changeDoctorOffice(
+            @PathVariable UUID doctorId,
+            @RequestParam String officeNumber
+    ) {
+        String result = doctorService.changeDoctorOffice(doctorId, officeNumber);
+        if (result.equals("The doctor with that id does not exist") || result.equals("The office with that office number does not exist")) {
+            return ResponseEntity.status(404).body(result);
+        } else if (result.equals("That office is taken by other doctor")) {
             return ResponseEntity.status(409).body(result);
         } else {
             return ResponseEntity.status(200).body(result);
